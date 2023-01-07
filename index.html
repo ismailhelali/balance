@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Date Calculator de Wafae Ennasri</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+<form id="my-form">
+  <div class="form-group">
+    <label for="start-date">Start Date</label>
+    <input type="date" id="start-date" name="start-date" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="num-days">Number of Days</label>
+    <input type="number" id="num-days" name="num-days" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <select id="name" name="name" class="form-control">
+      <option value="Alice">Alice</option>
+      <option value="Bob">Bob</option>
+      <option value="Charlie">Charlie</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="amount">Amount</label>
+    <input type="number" id="amount" name="amount" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="payment-mode">Payment Mode</label>
+    <select id="payment-mode" name="payment-mode" class="form-control">
+      <option value="cash">Cash</option>
+      <option value="card">Card</option>
+      <option value="transfer">Transfer</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<!-- CSS -->
+<style>
+  .form-control {
+    width: 300px;
+  }
+</style>
+
+<!-- JavaScript -->
+<script>
+  // Get the form element
+  const form = document.getElementById('my-form');
+
+  // Add a submit event listener to the form
+  form.addEventListener('submit', e => {
+    // Prevent the default form submission behavior
+    e.preventDefault();
+
+    // Get the start date, number of days, name, amount, and payment mode
+    const startDate = form.startDate.value;
+    const numDays = form.numDays.value;
+    const name = form.name.value;
+    const amount = form.amount.value;
+    const paymentMode = form.paymentMode.value;
+
+    // Calculate the end date
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + numDays);
+
+    // Format the end date
+    const endDateFormatted = `${endDate.getDate()}/${endDate.getMonth() + 1}/${endDate.getFullYear()}`;
+
+    // Display the result
+    console.log(`End date: ${endDateFormatted}`);
+    console.log(`Name: ${name}`);
+    console.log(`Amount: ${amount}`);
+    console.log(`Payment mode: ${paymentMode}`);
+
+
+  // Save the data to the file
+  const data = {
+    startDate: startDate,
+    endDate: endDateFormatted,
+    name: name,
+    amount: amount,
+    paymentMode: paymentMode
+  };
+
+  fetch('incom.js', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+});
+</script>
