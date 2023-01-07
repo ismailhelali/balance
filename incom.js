@@ -1,4 +1,4 @@
-
+<script>
 
 // Array to store the submissions
 var submissions = [];
@@ -44,3 +44,6 @@ document.getElementById("form").addEventListener("submit", function(event) {
   event.preventDefault();
   calculateDate();
 });
+
+
+</script>
