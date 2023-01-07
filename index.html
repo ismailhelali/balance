@@ -1,100 +1,179 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="utf-8">
-  <title>Date Calculator de Wafae Ennasri</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <style>
-    .form {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-  </style>
+	<title>Finance Tracker</title>
+	<style>
+		body {
+	font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 20px;
+}
+
+label {
+	margin: 10px;
+}
+
+input[type="submit"] {
+	margin: 20px;
+	padding: 10px;
+	border: none;
+	background-color: blue;
+	color: white;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	background-color: darkblue;
+}
+
+table {
+	margin: 20px;
+	width: 90%;
+}
+
+th, td {
+	padding: 10px;
+}
+
+th {
+	background-color: lightgrey;
+}
+
+td {
+	text-align: right;
+}
+
+td.left {
+	text-align: left;
+}
+	</style>
 </head>
-
 <body>
+	<h1>Finance Tracker</h1>
 
-<form id="form">
-  <label for="date">Date de création:</label><br>
-  <input type="date" id="date" name="date"><br>
-  <label for="echeance">Nombre de jours d'échéance:</label><br>
-  <input type="number" id="echeance" name="echeance"><br>
-  <label for="amount">Montant:</label><br>
-  <input type="number" id="amount" name="amount"><br>
-  <label for="type">Type:</label><br>
-  <select id="type" name="type">
-    <option value="client">Client</option>
-    <option value="fournisseur">Fournisseur</option>
-    <option value="solde de départ">Solde de départ</option>
-  </select><br>
-  <label for="nom">Nom:</label><br>
-  <input type="text" id="nom" name="nom"><br><br>
-  <input type="submit" value="Submit">
-</form> 
-  
-  <table>
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Total clients</th>
-      <th>Total fournisseurs</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody id="table-body">
-  </tbody>
-</table>
-  </body>
-  
+	<h2>Add Transaction</h2>
+	<form id="add-transaction-form">
+		<label for="date">Date:</label><br>
+		<input type="date" id="date"><br>
+		<label for="num-days">Number of Days:</label><br>
+		<input type="number" id="num-days"><br>
+		<label for="amount">Amount:</label><br>
+		<input type="number" id="amount"><br>
+		<label for="reference-number">Reference Number:</label><br>
+		<input type="text" id="reference-number"><br>
+		<label for="transaction-type">Transaction Type:</label><br>
+		<select id="transaction-type">
+			<option value="input">Input</option>
+			<option value="output">Output</option>
+		</select><br>
+		<label for="name">Name:</label><br>
+		<input type="text" id="name"><br>
+		<br>
+		<input type="submit" value="Submit">
+	</form> 
 
-  <script>
-  const form = document.getElementById('form');
-  const submitButton = document.querySelector('input[type="submit"]');
-  submitButton.addEventListener('click', function(event) {
-    const formData = new FormData(form);
-    const data = {};
-    for (const [key, value] of formData.entries()) {
-      data[key] = value;
-    }
-    // Store the data in the local device
-    localStorage.setItem('data', JSON.stringify(data));
+	<h2>Transaction History</h2>
+	<form id="transaction-history-form">
+		<label for="start-date">Start Date:</label><br>
+		<input type="date" id="start-date"><br>
+		<label for="end-date">End Date:</label><br>
+		<input type="date" id="end-date"><br>
+		<br>
+		<input type="submit" value="Show History">
+	</form> 
 
-    // Initialize the totals
-    let totalClients = 0;
-    let totalFournisseurs = 0;
-    let total = 0;
+	<div id="transaction-history-table-container" style="display: none;">
+		<table id="transaction-history-table">
+			<tr>
+				<th>Date</th>
+				<th>Input</th> 
+				<th>Output</th>
+				<th>Balance</th>
+			</tr>
+		</table>
+	</div>
 
-    // Iterate over the data and update the totals
-    for (const key in data) {
-      const item = data[key];
-      if (item.type === 'client') {
-        totalClients += Number(item.amount);
-      } else if (item.type === 'fournisseur') {
-        totalFournisseurs += Number(item.amount);
-      }
-      total = totalClients - totalFournisseurs + total;
+	<script>
+		const transactionHistory = [];
 
-      // Create a new row in the table for each item
-      const tableBody = document.getElementById('table-body');
-      const row = document.createElement('tr');
-      const dateCol = document.createElement('td');
-      const clientCol = document.createElement('td');
-      const fournisseurCol = document.createElement('td');
-      const totalCol = document.createElement('td');
+		const addTransactionForm = document.getElementById('add-transaction-form');
+		addTransactionForm.addEventListener('submit', event => {
+			event.preventDefault();
 
-      dateCol.textContent = item.date;
-      clientCol.textContent = totalClients;
-      fournisseurCol.textContent = totalFournisseurs;
-      totalCol.textContent = total;
+			const date = document.getElementById('date').value;
+			const numDays = parseInt(document.getElementById('num-days').value, 10);
+			const amount = parseFloat(document.getElementById('amount').value);
+			const referenceNumber = document.getElementById('reference-number').value;
+			const transactionType = document.getElementById('transaction-type').value;
+			const name = document.getElementById('name').value;
 
-      row.appendChild(dateCol);
-      row.appendChild(clientCol);
-      row.appendChild(fournisseurCol);
-      row.appendChild(totalCol);
+			transactionHistory.push({
+				date,
+				numDays,
+				amount,
+				referenceNumber,
+				transactionType,
+				name
+			});
+		});
 
-      tableBody.appendChild(row);
-    }
-  });
-</script>
+		const transactionHistoryForm = document.getElementById('transaction-history-form');
+		transactionHistoryForm.addEventListener('submit', event => {
+			event.preventDefault();
+
+			const startDate = document.getElementById('start-date').value;
+			const endDate = document.getElementById('end-date').value;
+
+			const transactionHistoryTableContainer = document.getElementById('transaction-history-table-container');
+			transactionHistoryTableContainer.style.display = 'block';
+
+			const transactionHistoryTable = document.getElementById('transaction-history-table');
+			transactionHistoryTable.innerHTML = '';
+
+			let balance = 0;
+			for (const transaction of transactionHistory) {
+				if (transaction.date >= startDate && transaction.date <= endDate) {
+					const row = document.createElement('tr');
+
+					const dateCell = document.createElement('td');
+					dateCell.innerText = transaction.date;
+					row.appendChild(dateCell);
+
+					const inputCell = document.createElement('td');
+					if (transaction.transactionType === 'input') {
+						inputCell.innerText = transaction.amount;
+						balance += transaction.amount;
+					} else {
+						inputCell.innerText = '';
+					}
+					row.appendChild(inputCell);
+
+					const outputCell = document.createElement('td');
+					if (transaction.transactionType === 'output') {
+						outputCell.innerText = transaction.amount;
+						balance -= transaction.amount;
+					} else {
+						outputCell.innerText = '';
+					}
+					row.appendChild(outputCell);
+
+					const balanceCell = document.createElement('td');
+					balanceCell.innerText = balance;
+					row.appendChild(balanceCell);
+
+					transactionHistoryTable.appendChild(row);
+				}
+			}
+		});
+	</script>
+</body>
 </html>
