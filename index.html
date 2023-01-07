@@ -58,7 +58,7 @@ td.left {
 	</style>
 </head>
 <body>
-	<h1>Finance Tracker</h1>
+	<h1>Finance Tracker by Ismail Helali</h1>
 
 	<h2>Add Transaction</h2>
 	<form id="add-transaction-form">
@@ -87,93 +87,84 @@ td.left {
 		<input type="date" id="start-date"><br>
 		<label for="end-date">End Date:</label><br>
 		<input type="date" id="end-date"><br>
-		<br>
-		<input type="submit" value="Show History">
-	</form> 
+		
+				<br>
+				<input type="submit" value="Show History">
+			</form> 
 
-	<div id="transaction-history-table-container" style="display: none;">
-		<table id="transaction-history-table">
-			<tr>
-				<th>Date</th>
-				<th>Input</th> 
-				<th>Output</th>
-				<th>Balance</th>
-			</tr>
-		</table>
-	</div>
+			<div id="transaction-history-table-container" style="display: none;">
+				<table id="transaction-history-table">
+					<tr>
+						<th>Date</th>
+						<th>Input</th> 
+						<th>Output</th>
+						<th>Balance</th>
+					</tr>
+				</table>
+			</div>
 
-	<script>
-		const transactionHistory = [];
+			<script>
+				let transactionHistory;
 
-		const addTransactionForm = document.getElementById('add-transaction-form');
-		addTransactionForm.addEventListener('submit', event => {
-			event.preventDefault();
-
-			const date = document.getElementById('date').value;
-			const numDays = parseInt(document.getElementById('num-days').value, 10);
-			const amount = parseFloat(document.getElementById('amount').value);
-			const referenceNumber = document.getElementById('reference-number').value;
-			const transactionType = document.getElementById('transaction-type').value;
-			const name = document.getElementById('name').value;
-
-			transactionHistory.push({
-				date,
-				numDays,
-				amount,
-				referenceNumber,
-				transactionType,
-				name
-			});
-		});
-
-		const transactionHistoryForm = document.getElementById('transaction-history-form');
-		transactionHistoryForm.addEventListener('submit', event => {
-			event.preventDefault();
-
-			const startDate = document.getElementById('start-date').value;
-			const endDate = document.getElementById('end-date').value;
-
-			const transactionHistoryTableContainer = document.getElementById('transaction-history-table-container');
-			transactionHistoryTableContainer.style.display = 'block';
-
-			const transactionHistoryTable = document.getElementById('transaction-history-table');
-			transactionHistoryTable.innerHTML = '';
-
-			let balance = 0;
-			for (const transaction of transactionHistory) {
-				if (transaction.date >= startDate && transaction.date <= endDate) {
-					const row = document.createElement('tr');
-
-					const dateCell = document.createElement('td');
-					dateCell.innerText = transaction.date;
-					row.appendChild(dateCell);
-
-					const inputCell = document.createElement('td');
-					if (transaction.transactionType === 'input') {
-						inputCell.innerText = transaction.amount;
-						balance += transaction.amount;
-					} else {
-						inputCell.innerText = '';
-					}
-					row.appendChild(inputCell);
-
-					const outputCell = document.createElement('td');
-					if (transaction.transactionType === 'output') {
-						outputCell.innerText = transaction.amount;
-						balance -= transaction.amount;
-					} else {
-						outputCell.innerText = '';
-					}
-					row.appendChild(outputCell);
-
-					const balanceCell = document.createElement('td');
-					balanceCell.innerText = balance;
-					row.appendChild(balanceCell);
-
-					transactionHistoryTable.appendChild(row);
+				// Check if transaction history is stored in local storage
+				if (localStorage.getItem('transactionHistory')) {
+					transactionHistory = JSON.parse(localStorage.getItem('transactionHistory'));
+				} else {
+					transactionHistory = [];
 				}
-			}
-		});
-	</script>
-</body>
-</html>
+
+				const addTransactionForm = document.getElementById('add-transaction-form');
+				addTransactionForm.addEventListener('submit', event => {
+					event.preventDefault();
+
+					const date = document.getElementById('date').value;
+					const numDays = parseInt(document.getElementById('num-days').value, 10);
+					const amount = parseFloat(document.getElementById('amount').value);
+					const referenceNumber = document.getElementById('reference-number').value;
+					const transactionType = document.getElementById('transaction-type').value;
+					const name = document.getElementById('name').value;
+
+					transactionHistory.push({
+						date,
+						numDays,
+						amount,
+						referenceNumber,
+						transactionType,
+						name
+					});
+
+					// Store updated transaction history in local storage
+					localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
+
+					document.getElementById('date').value = '';
+					document.getElementById('num-days').value = '';
+					document.getElementById('amount').value = '';
+					document.getElementById('reference-number').value = '';
+					document.getElementById('name').value = '';
+				});
+
+				const transactionHistoryForm = document.getElementById('transaction-history-form');
+				transactionHistoryForm.addEventListener('submit', event => {
+					event.preventDefault();
+
+					const startDate = document.getElementById('start-date').value;
+					const endDate = document.getElementById('end-date').value;
+
+
+
+
+								document.getElementById('transaction-history-table').appendChild(row);
+							});
+
+							document.getElementById('transaction-history-table-container').style.display = 'block';
+						} else {
+							alert('No transactions found within the specified date range.');
+						}
+					});
+
+					document.getElementById('start-date').value = '';
+					document.getElementById('end-date').value = '';
+				});
+			</script>
+		</body>
+	</html>
