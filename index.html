@@ -1,170 +1,186 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Finance Tracker</title>
-	<style>
-		body {
-	font-family: Arial, sans-serif;
-}
+  <title>Finance Tracker by Ismail Helali</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
 
-h1, h2 {
-	text-align: center;
-}
+    h1, h2 {
+      text-align: center;
+    }
 
-form {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin: 20px;
-}
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
 
-label {
-	margin: 10px;
-}
+    label {
+      margin: 10px;
+    }
 
-input[type="submit"] {
-	margin: 20px;
-	padding: 10px;
-	border: none;
-	background-color: blue;
-	color: white;
-	cursor: pointer;
-}
+    input[type="submit"] {
+      margin: 20px;
+      padding: 10px;
+      border: none;
+      background-color: blue;
+      color: white;
+      cursor: pointer;
+    }
 
-input[type="submit"]:hover {
-	background-color: darkblue;
-}
+    input[type="submit"]:hover {
+      background-color: darkblue;
+    }
 
-table {
-	margin: 20px;
-	width: 90%;
-}
+    table {
+      margin: 20px;
+      width: 90%;
+    }
 
-th, td {
-	padding: 10px;
-}
+    th, td {
+      padding: 10px;
+    }
 
-th {
-	background-color: lightgrey;
-}
+    th {
+      background-color: lightgrey;
+    }
 
-td {
-	text-align: right;
-}
+    td {
+      text-align: right;
+    }
 
-td.left {
-	text-align: left;
-}
-	</style>
+    td.left {
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-	<h1>Finance Tracker by Ismail Helali</h1>
+  <h1>Finance Tracker by Ismail Helali</h1>
 
-	<h2>Add Transaction</h2>
-	<form id="add-transaction-form">
-		<label for="date">Date:</label><br>
-		<input type="date" id="date"><br>
-		<label for="num-days">Number of Days:</label><br>
-		<input type="number" id="num-days"><br>
-		<label for="amount">Amount:</label><br>
-		<input type="number" id="amount"><br>
-		<label for="reference-number">Reference Number:</label><br>
-		<input type="text" id="reference-number"><br>
-		<label for="transaction-type">Transaction Type:</label><br>
-		<select id="transaction-type">
-			<option value="input">Input</option>
-			<option value="output">Output</option>
-		</select><br>
-		<label for="name">Name:</label><br>
-		<input type="text" id="name"><br>
-		<br>
-		<input type="submit" value="Submit">
-	</form> 
+  <h2>Add Transaction</h2>
+  <form id="add-transaction-form">
+    <label for="date">Date:</label><br>
+    <input type="date" id="date"><br>
+    <label for="num-days">Number of Days:</label><br>
+    <input type="number" id="num-days"><br>
+    <label for="amount">Amount:</label><br>
+    <input type="number" id="amount"><br>
+    <label for="reference-number">Reference Number:</label><br>
+    <input type="text" id="reference-number"><br>
+    <label for="transaction-type">Transaction Type:</label><br>
+    <select id="transaction-type">
+      <option value="input">Input</option>
+      <option value="output">Output</option>
+    </select><br>
+    <label for="name">Name:</label><br>
+    <input type="text" id="name"><br>
+    <br>
+    <input type="submit" value="Submit">
+  </form>
 
-	<h2>Transaction History</h2>
-	<form id="transaction-history-form">
-		<label for="start-date">Start Date:</label><br>
-		<input type="date" id="start-date"><br>
-		<label for="end-date">End Date:</label><br>
-		<input type="date" id="end-date"><br>
-		
-				<br>
-				<input type="submit" value="Show History">
-			</form> 
+  <h2>Transaction History</h2>
+  <form id="transaction-history-form">
+    <label for="start-date">Start Date:</label><br>
+    <input type="date" id="start-date"><br>
+    <label for="end-date">End Date:</label><br>
+    <input type="date" id="end-date"><br>
 
-			<div id="transaction-history-table-container" style="display: none;">
-				<table id="transaction-history-table">
-					<tr>
-						<th>Date</th>
-						<th>Input</th> 
-						<th>Output</th>
-						<th>Balance</th>
-					</tr>
-				</table>
-			</div>
+    <br>
+    <input type="submit" value="Show History">
+  </form>
 
-			<script>
-				let transactionHistory;
+  <div id="transaction-history-table-container" style="display: none;">
+    <table id="transaction-history-table">
+      <tr>
+        <th>Date</th>
+        <th>Input</th> 
+        <th>Output</th>
+        <th>Balance</th>
+      </tr>
+    </table>
+  </div>
 
-				// Check if transaction history is stored in local storage
-				if (localStorage.getItem('transactionHistory')) {
-					transactionHistory = JSON.parse(localStorage.getItem('transactionHistory'));
-				} else {
-					transactionHistory = [];
-				}
+  <script>
+    let transactionHistory;
 
-				const addTransactionForm = document.getElementById('add-transaction-form');
-				addTransactionForm.addEventListener('submit', event => {
-					event.preventDefault();
+    // Check if transaction history is stored in local storage
+    if (localStorage.getItem('transactionHistory')) {
+      transactionHistory = JSON.parse(localStorage.getItem('transactionHistory'));
+    } else {
+      transactionHistory = [];
+    }
 
-					const date = document.getElementById('date').value;
-					const numDays = parseInt(document.getElementById('num-days').value, 10);
-					const amount = parseFloat(document.getElementById('amount').value);
-					const referenceNumber = document.getElementById('reference-number').value;
-					const transactionType = document.getElementById('transaction-type').value;
-					const name = document.getElementById('name').value;
+    const addTransactionForm = document.getElementById('add-transaction-form');
+    addTransactionForm.addEventListener('submit', event => {
+      event.preventDefault();
 
-					transactionHistory.push({
-						date,
-						numDays,
-						amount,
-						referenceNumber,
-						transactionType,
-						name
-					});
+      const date = document.getElementById('date').value;
+      const numDays = document.getElementById('num-days').value;
+      const amount = document.getElementById('amount').value;
+      const referenceNumber = document.getElementById('reference-number').value;
+      const transactionType = document.getElementById('transaction-type').value;
+      const name = document.getElementById('name').value;
 
-					// Store updated transaction history in local storage
-					localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
+      const transaction = {
+        date: date,
+        numDays: numDays,
+        amount: amount,
+        referenceNumber: referenceNumber,
+        transactionType: transactionType,
+        name: name
+      };
 
-					document.getElementById('date').value = '';
-					document.getElementById('num-days').value = '';
-					document.getElementById('amount').value = '';
-					document.getElementById('reference-number').value = '';
-					document.getElementById('name').value = '';
-				});
+      transactionHistory.push(transaction);
+      localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
 
-				const transactionHistoryForm = document.getElementById('transaction-history-form');
-				transactionHistoryForm.addEventListener('submit', event => {
-					event.preventDefault();
+      addTransactionForm.reset();
+    });
 
-					const startDate = document.getElementById('start-date').value;
-					const endDate = document.getElementById('end-date').value;
+    const transactionHistoryForm = document.getElementById('transaction-history-form');
+    transactionHistoryForm.addEventListener('submit', event => {
+      event.preventDefault();
 
+      const startDate = document.getElementById('start-date').value;
+      const endDate = document.getElementById('end-date').value;
 
+      const transactionHistoryTableContainer = document.getElementById('transaction-history-table-container');
+      transactionHistoryTableContainer.style.display = 'block';
 
+      const transactionHistoryTable = document.getElementById('transaction-history-table');
+      transactionHistoryTable.innerHTML = '';
 
-								document.getElementById('transaction-history-table').appendChild(row);
-							});
+      let balance = 0;
+      for (let i = 0; i < transactionHistory.length; i++) {
+        const transaction = transactionHistory[i];
+        if (transaction.date >= startDate && transaction.date <= endDate) {
+          const input = transaction.transactionType === 'input' ? transaction.amount : 0;
+          const output = transaction.transactionType === 'output' ? transaction.amount : 0;
+          balance += input - output;
 
-							document.getElementById('transaction-history-table-container').style.display = 'block';
-						} else {
-							alert('No transactions found within the specified date range.');
-						}
-					});
+          const row = document.createElement('tr');
+          const dateColumn = document.createElement('td');
+          dateColumn.innerHTML = transaction.date;
+          row.appendChild(dateColumn);
 
-					document.getElementById('start-date').value = '';
-					document.getElementById('end-date').value = '';
-				});
-			</script>
-		</body>
-	</html>
+          const inputColumn = document.createElement('td');
+          inputColumn.innerHTML = input;
+          row.appendChild(inputColumn);
+
+          const outputColumn = document.createElement('td');
+          outputColumn.innerHTML = output;
+          row.appendChild(outputColumn);
+
+          const balanceColumn = document.createElement('td');
+          balanceColumn.innerHTML = balance;
+          row.appendChild(balanceColumn);
+
+          transactionHistoryTable.appendChild(row);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
