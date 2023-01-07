@@ -34,18 +34,7 @@
 </form> 
   </body>
   
-    <table>
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Total clients</th>
-      <th>Total fournisseurs</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody id="table-body">
-  </tbody>
-</table>
+
   
   <script>
   const form = document.getElementById('form');
@@ -61,7 +50,18 @@
   });
 </script>
   
-
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Total clients</th>
+      <th>Total fournisseurs</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+  </tbody>
+</table>
 
 <script>
   // Get the stored data from the local device
@@ -73,11 +73,12 @@
   let total = 0;
 
   // Iterate over the data and update the totals
-  for (const item of data) {
+  for (const key in data) {
+    const item = data[key];
     if (item.type === 'client') {
-      totalClients += item.amount;
+      totalClients += Number(item.amount);
     } else if (item.type === 'fournisseur') {
-      totalFournisseurs += item.amount;
+      totalFournisseurs += Number(item.amount);
     }
     total = totalClients - totalFournisseurs + total;
 
@@ -101,5 +102,5 @@
     tableBody.appendChild(row);
   }
 </script>
+  
 </html>
-
