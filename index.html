@@ -33,5 +33,73 @@
   <input type="submit" value="Submit">
 </form> 
   </body>
+  
+    <table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Total clients</th>
+      <th>Total fournisseurs</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+  </tbody>
+</table>
+  
+  <script>
+  const form = document.getElementById('form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+    // Store the data in the local device
+    localStorage.setItem('data', JSON.stringify(data));
+  });
+</script>
+  
+
+
+<script>
+  // Get the stored data from the local device
+  const data = JSON.parse(localStorage.getItem('data'));
+
+  // Initialize the totals
+  let totalClients = 0;
+  let totalFournisseurs = 0;
+  let total = 0;
+
+  // Iterate over the data and update the totals
+  for (const item of data) {
+    if (item.type === 'client') {
+      totalClients += item.amount;
+    } else if (item.type === 'fournisseur') {
+      totalFournisseurs += item.amount;
+    }
+    total = totalClients - totalFournisseurs + total;
+
+    // Create a new row in the table for each item
+    const tableBody = document.getElementById('table-body');
+    const row = document.createElement('tr');
+    const dateCol = document.createElement('td');
+    const clientCol = document.createElement('td');
+    const fournisseurCol = document.createElement('td');
+    const totalCol = document.createElement('td');
+
+    dateCol.textContent = item.date;
+    clientCol.textContent = totalClients;
+    fournisseurCol.textContent = totalFournisseurs;
+    totalCol.textContent = total;
+
+    row.appendChild(dateCol);
+    row.appendChild(clientCol);
+    row.appendChild(fournisseurCol);
+    row.appendChild(totalCol);
+    tableBody.appendChild(row);
+  }
+</script>
 </html>
 
